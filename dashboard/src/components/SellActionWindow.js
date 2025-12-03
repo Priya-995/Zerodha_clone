@@ -25,11 +25,14 @@ const SellActionWindow = ({ uid }) => {
     });
     
     // Only close after the order is saved
-    GeneralContext.closeSellWindow();
+    closeSellWindow();
     
-  } catch (error) {
-    console.error("Error:", error);
-    alert("Failed to place order!");
+  } 
+   catch (error) {
+    console.error("Full error:", error);
+    console.error("Error response:", error.response?.data);
+    console.error("Error status:", error.response?.status);
+    alert("Failed to place order! Check console for details");
   }
 };
 
