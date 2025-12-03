@@ -12,12 +12,15 @@ export function AuthProvider({ children }) {
     verifyUser();
   }, []);
 
+   
+    
   const verifyUser = async () => {
     try {
-      const response = await fetch('http://localhost:3002/userVerification', {
-        method: 'POST',
-        credentials: 'include',
-      });
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
+      const response = await fetch(`${API_URL}/userVerification`, {
+  method: 'POST',
+  credentials: 'include',
+});
       const data = await response.json();
       
       if (data.success && data.status) {
@@ -31,7 +34,8 @@ export function AuthProvider({ children }) {
   };
 
   const login = async (email, password) => {
-    const response = await fetch('http://localhost:3002/login', {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
+    const response = await fetch(`${API_URL}/login`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -46,7 +50,8 @@ export function AuthProvider({ children }) {
   };
 
   const signup = async (email, password, username) => {
-    const response = await fetch('http://localhost:3002/signup', {
+     const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
+    const response = await fetch(`${API_URL}/signup`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },

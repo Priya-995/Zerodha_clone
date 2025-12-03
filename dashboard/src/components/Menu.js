@@ -14,14 +14,13 @@ const Menu = () => {
 const handleLogout = () => {
   localStorage.removeItem("token");
   sessionStorage.removeItem("token");
-
-  console.log("Logged out");
-
+  const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000";
   setTimeout(() => {
-    window.location.href = "http://localhost:3000/";
-  }, 1000); // 1 sec delay
-  // Your logout code here → clearing tokens, navigating, etc.
+    window.location.href = `${FRONTEND_URL}/`;
+  }, 1000);
 };
+  // Your logout code here → clearing tokens, navigating, etc.
+
 
  const handleMenuClick=(index)=>{
      setSelectedMenu(index);

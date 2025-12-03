@@ -48,9 +48,10 @@ function Signup() {
         const result = await signup(formData.email, formData.password, formData.username);
         
         if (result.success) {
+             const REDIRECT_URL=process.env.REACT_APP_DASHBOARD_URL||  'http://localhost:3001';
             // Success - navigate to dashboard
             setTimeout(()=>{
- window.location.href = 'http://localhost:3001/';
+window.location.href =  `${REDIRECT_URL}/`;
             },3000)
             setError('');
             

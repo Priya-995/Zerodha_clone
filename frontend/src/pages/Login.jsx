@@ -19,8 +19,9 @@ export default function Login() {
     const result = await login(email, password);
     
     if (result.success) {
+      const REDIRECT_URL=process.env.REACT_APP_DASHBOARD_URL||  'http://localhost:3001';
         setTimeout(()=>{
-window.location.href = 'http://localhost:3001/';
+window.location.href =  `${REDIRECT_URL}/`;
         },5000);
         setError('');
       

@@ -7,12 +7,14 @@ import { VerticalGraph } from "./VerticalGraph";
 
   const [allHoldings,setAllHoldings]=useState([]);
    
-  useEffect(()=>{
-   axios.get("http://localhost:3002/addHoldings").then((res)=>{
-    console.log(res.data);
+  useEffect(() => {
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3002";
+  
+  axios.get(`${API_URL}/addHoldings`).then((res) => {
+    
     setAllHoldings(res.data);
-   })
-  },[])
+  });
+}, []);
 
 // const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 const labels=allHoldings.map((subArray)=>subArray["name"]);

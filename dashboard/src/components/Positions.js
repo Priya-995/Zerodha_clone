@@ -5,12 +5,15 @@ import axios from 'axios';
 const Positions = () => {
 
   const [allPositions,setAllPositions]=useState([]);
-  useEffect(()=>{
-    axios.get("http://localhost:3002/addPositions").then((res)=>{
-      console.log(res.data);
-     setAllPositions(res.data);
-    })
-  },[])
+ 
+   useEffect(() => {
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3002";
+    
+    axios.get(`${API_URL}/addPositions`).then((res) => {
+      
+      setAllPositions(res.data);
+    });
+  }, []);
   return (
     <>
       <h3 className="title">Positions ({allPositions.length})</h3>
