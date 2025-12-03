@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { Link } from "react-router-dom";
 
 import axios from "axios";
@@ -7,13 +7,16 @@ import GeneralContext from "./GeneralContext";
 
 import "./BuyActionWindow.css";
 
+
 const BuyActionWindow = ({ uid }) => {
   const [stockQuantity,setStockQuantity]=useState(1);
   const [stockPrice, setStockPrice]=useState(0.0);
 
+   const { closeBuyWindow } = useContext(GeneralContext);
+
  const handleBuyClick = async () => {
   try {
-    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:10000";
+    const API_URL = process.env.REACT_APP_API_URL ||   "http://localhost:10000";
     
     // Wait for the request to complete
     await axios.post(`${API_URL}/newOrder`, {
@@ -24,11 +27,13 @@ const BuyActionWindow = ({ uid }) => {
     });
     
     // Only close after the order is saved
-    GeneralContext.closeBuyWindow();
+    closeBuyWindow();
     
   } catch (error) {
-    console.error("Error:", error);
-    alert("Failed to place order!");
+    console.error("Full error:", error);
+    console.error("Error response:", error.response?.data);
+    console.error("Error status:", error.response?.status);
+    alert("Failed to place order! Check console for details");
   }
 };
 
