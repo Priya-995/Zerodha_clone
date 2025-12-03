@@ -843,4 +843,56 @@ hr {
 }
 
 
+.profile-container {
+  position: relative;
+  display: inline-block;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.avatar {
+  background: #6c63ff;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* dropdown */
+.dropdown {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background: white;
+  padding: 10px;
+  width: 120px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.dropdown p {
+  padding: 8px;
+  margin: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.dropdown p:hover {
+  background: #f2f2f2;
+}
 

@@ -5,6 +5,23 @@ import { Link } from "react-router-dom";
 const Menu = () => {
  const [selectedMenu, setSelectedMenu]=useState(0);
  const [isProfileDropdownOpen, setIsProfileDropdownOpen]=useState(false);
+ const [open, setOpen] = useState(false);
+
+// const handleProfileClick = () => {
+//   setOpen((prev) => !prev);  // toggle dropdown
+// };
+
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  sessionStorage.removeItem("token");
+
+  console.log("Logged out");
+
+  setTimeout(() => {
+    window.location.href = "http://localhost:3000/";
+  }, 1000); // 1 sec delay
+  // Your logout code here → clearing tokens, navigating, etc.
+};
 
  const handleMenuClick=(index)=>{
      setSelectedMenu(index);
@@ -83,10 +100,19 @@ const Menu = () => {
           </li>
         </ul>
         <hr />
-        <div className="profile" onClick={handleProfileClick}>
-          <div className="avatar">ZU</div>
-          <p className="username">USERID</p>
-        </div>
+        <div className="profile-container">
+  <div className="profile" onClick={handleProfileClick}>
+    <div className="avatar">ZU</div>
+    <p className="username">USERID</p>
+  </div>
+
+  {isProfileDropdownOpen && (
+    <div className="dropdown">
+      <p onClick={handleLogout}>Logout</p>
+    </div>
+  )}
+</div>
+
       </div>
     </div>
   );

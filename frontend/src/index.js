@@ -11,16 +11,21 @@ import SupportPage from './landing_page/support/SupportPage';
 import Navbar from './landing_page/Navbar';
 import Footer from './landing_page/Footer';
 import NotFound from './landing_page/NotFound';
+import { AuthProvider } from './context/AuthContext';
+import Login from './pages/Login';
+
 
 
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+   <AuthProvider>
   <BrowserRouter>
   <Navbar/>
   <Routes>
     <Route path="/" element={<HomePage/>}/>
+    <Route path="/login" element={<Login/>}/>
     <Route path="/signup" element={<Signup/>}/>
     <Route path="/about" element={<AboutPage/>}/>
     <Route path="/product" element={<ProductPage/>}/>
@@ -31,5 +36,6 @@ root.render(
   <Footer/>
 
   </BrowserRouter>
+  </AuthProvider>
 );
 

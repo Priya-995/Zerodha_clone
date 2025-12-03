@@ -4,8 +4,13 @@ const express= require('express');
 const mongoose=require('mongoose');
 const bodyParser=require('body-parser');
 const cors=require('cors');
-// const cookieParser = require("cookie-parser");
+const cookieParser = require("cookie-parser");
 // const authRoute = require("./Routes/AuthRoute");
+const {UserModel} = require("./model/UserModel");
+const { createSecretToken } = require("./util/SecretToken");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
 
 const {HoldingsModel}=require("./model/HoldingsModel");
 const {PositionsModel} =require("./model/PositionsModel");
@@ -15,14 +20,19 @@ const PORT=process.env.PORT||3002;
 const uri=process.env.MONGO_URL;
 
 const app=express();
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // Your React app URL
+  credentials: true
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(cookieParser());
+app.use(cookieParser());
 
-// app.use(express.json());
+app.use(express.json());
+
 
 // app.use("/", authRoute);
+//⁡⁢⁢⁡⁣⁢⁡⁢⁢⁣Adding sample data for rendering on dashboard⁡
 // app.get('/addHoldings',async (req,res)=>{
 //     let tempHoldings=[
 //   {
@@ -212,10 +222,178 @@ app.post('/newOrder', async(req,res)=>{
   newOrder.save();
   res.send("Order saved!");
 });
-
-
-app.listen(PORT,()=>{
-    console.log("App started!");
-    mongoose.connect(uri);
-    console.log("DB connected");
+//fetching order details from database
+app.get('/getOrder',async(req,res)=>{
+  let AllOrders=await OrdersModel.find({});
+  res.json(AllOrders);
 })
+app.post('/signup', async (req, res) => {
+  try {
+    const { email, password, username } = req.body;
+
+    // Validate input
+    if (!email || !password || !username) {
+      return res.json({ 
+        message: "All fields are required", 
+        success: false 
+      });
+    }
+
+    // Check if user exists
+    const existingUser = await UserModel.findOne({ email });
+    if (existingUser) {
+      return res.json({ 
+        message: "User already exists", 
+        success: false 
+      });
+    }
+
+    // DON'T hash here - let the pre-save middleware do it
+    // Create user with plain password
+    const user = await UserModel.create({ 
+      email, 
+      password: password,  // ← Plain password, middleware will hash it
+      username,
+      createdAt: new Date()
+    });
+
+    // Create token
+    const token = createSecretToken(user._id);
+    
+    // Set cookie
+    res.cookie("token", token, {
+      withCredentials: true,
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    res.status(201).json({ 
+      message: "User signed up successfully", 
+      success: true, 
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username
+      }
+    });
+  } catch (error) {
+    console.error('Signup error:', error);
+    res.status(500).json({ 
+      message: "Server error: " + error.message, 
+      success: false 
+    });
+  }
+});
+
+// ⭐ FIXED LOGIN ROUTE
+app.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+   
+    
+    // Validate input
+    if (!email || !password) {
+    
+      return res.json({ 
+        message: 'All fields are required', 
+        success: false 
+      });
+    }
+    
+    // Find user
+    const user = await UserModel.findOne({ email });
+  
+    if (user) {
+      console.log('User details:', {
+        id: user._id,
+        email: user.email,
+        hasPassword: !!user.password,
+        passwordLength: user.password ? user.password.length : 0
+      });
+    }
+    
+    if (!user) {
+      return res.json({ 
+        message: 'Incorrect password or email', 
+        success: false 
+      });
+    }
+    
+    // Verify password
+    console.log('Comparing passwords...');
+    const auth = await bcrypt.compare(password, user.password);
+   
+    if (!auth) {
+    
+      return res.json({ 
+        message: 'Incorrect password or email', 
+        success: false 
+      });
+    }
+    
+    
+    // Create token
+    const token = createSecretToken(user._id);
+    
+    // Set cookie
+    res.cookie("token", token, {
+      withCredentials: true,
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+    
+    res.status(200).json({ 
+      message: "User logged in successfully", 
+      success: true,
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username
+      }
+    });
+  } catch (error) {
+   
+    res.status(500).json({ 
+      message: "Server error: " + error.message, 
+      success: false 
+    });
+  }
+});
+
+// ⭐ RENAMED AND FIXED VERIFY ROUTE
+app.post('/userVerification', (req, res) => {
+  const token = req.cookies.token;
+  
+  if (!token) {
+    return res.json({ status: false, success: false });
+  }
+
+  jwt.verify(token, process.env.TOKEN_KEY, async (err, data) => {
+    if (err) {
+      return res.json({ status: false, success: false });
+    } else {
+      const user = await UserModel.findById(data.id);
+      if (user) {
+        return res.json({ 
+          status: true, 
+          success: true,
+          user: user.username 
+        });
+      } else {
+        return res.json({ status: false, success: false });
+      }
+    }
+  });
+});
+
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+  mongoose.connect(uri);
+  console.log("✅ DB connected");
+});
