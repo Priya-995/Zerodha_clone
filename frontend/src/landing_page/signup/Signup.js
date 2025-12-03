@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Signup.css';
 
@@ -156,7 +156,9 @@ window.location.href =  `${REDIRECT_URL}/`;
 
                                         <p className="login-text">
                                             Already have an account? 
-                                            <a href="/login"> Login</a>
+                                            <Link to="/login">
+                                            <p> Login</p>
+                                            </Link>
                                         </p>
                                     </div>
                                 ) : (
