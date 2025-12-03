@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
     
   const verifyUser = async () => {
     try {
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:10000';
       const response = await fetch(`${API_URL}/userVerification`, {
   method: 'POST',
   credentials: 'include',
@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
   };
 
   const login = async (email, password) => {
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:10000';
     const response = await fetch(`${API_URL}/login`, {
       method: 'POST',
       credentials: 'include',
@@ -50,7 +50,7 @@ export function AuthProvider({ children }) {
   };
 
   const signup = async (email, password, username) => {
-     const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
+     const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:10000';
     const response = await fetch(`${API_URL}/signup`, {
       method: 'POST',
       credentials: 'include',

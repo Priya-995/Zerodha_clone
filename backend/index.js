@@ -22,7 +22,7 @@ const uri=process.env.MONGO_URL;
 const app=express();
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['https://stock-trading-platform-frontend-pnch.onrender.com', 'https://stock-trading-platform-dashboard-6nvv.onrender.com'];
+  : ['http://localhost:3000', 'http://localhost:3001'];
 
 app.use(cors({
   origin: function(origin, callback) {
