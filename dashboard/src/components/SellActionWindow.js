@@ -12,17 +12,26 @@ const SellActionWindow = ({ uid }) => {
 
   const { closeSellWindow } = useContext(GeneralContext);
 
-  const handleSellClick = () => {
+  const handleSellClick = async () => {
+  try {
     const API_URL = process.env.REACT_APP_API_URL || "http://localhost:10000";
-    axios.post(`${API_URL}/newOrder`, {
+    
+    // Wait for the request to complete
+    await axios.post(`${API_URL}/newOrder`, {
       name: uid,
       qty: stockQuantity,
       price: stockPrice,
       mode: "SELL",
     });
-
-    closeSellWindow();
-  };
+    
+    // Only close after the order is saved
+    GeneralContext.closeSellWindow();
+    
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Failed to place order!");
+  }
+};
 
   const handleCancelClick = () => {
     closeSellWindow();
