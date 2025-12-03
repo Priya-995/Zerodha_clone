@@ -5,12 +5,15 @@ import { Link } from "react-router-dom";
 
 const Orders = () => {
   const [allOrders,setAllOrders]=useState([]);
-    useEffect(()=>{
-      axios.get("http://localhost:3002/getOrder").then((res)=>{
-        console.log(res.data);
-       setAllOrders(res.data);
-      })
-    },[])
+    
+    useEffect(() => {
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:10000";
+      
+      axios.get(`${API_URL}/getOrder`).then((res) => {
+        
+        setAllOrders(res.data);
+      });
+    }, []);
 
      if(!allOrders.length){
   return (
