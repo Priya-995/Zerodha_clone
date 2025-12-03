@@ -24,7 +24,7 @@ const BuyActionWindow = ({ uid }) => {
     });
     
     // Only close after the order is saved
-    GeneralContext.closeBuyWindow();
+    closeBuyWindow();
     
   } catch (error) {
     console.error("Error:", error);
